@@ -20,6 +20,7 @@ function playAnimation(color) {
 }
 
 function nextSequence() {
+  // Reset played pattern
   userPlayedPattern = [];
 
   // Choose a color randomly
@@ -35,6 +36,7 @@ function nextSequence() {
   // Play sound
   playSound(randomChosenColor);
 
+  // Increase the level and update the title
   level++;
   $('#level-title').text('Level ' + level);
 }
@@ -55,11 +57,13 @@ function resetGame() {
 }
 
 function checkAnswer(currentLevel) {
+  // If current move is valid
   if (userPlayedPattern[currentLevel] === gamePattern[currentLevel]) {
+    // If all pattern is played correctly, continue to next level
     if (gamePattern.length - 1 == currentLevel) {
       setTimeout(nextSequence, 1000);
     }
-  } else {
+  } else { // If current move is not valid
     // Background color animation
     $('body').addClass('game-over');
 
@@ -74,23 +78,31 @@ function checkAnswer(currentLevel) {
     // Change title
     $('#level-title').text('Game Over, Press Any Key to Restart');
 
+    // Reset the game state
     resetGame();
   }
 }
 
 $('.btn').click(function(e) {
-  //if (!isGameStarted) {
-  //  startGame();
-  //  return;
-  //}
+  // Start game if it's not started yet
+  if (!isGameStarted) {
+    startGame();
+    return;
+  }
+
+  // Add new chosen color by user to the array
   userChosenColor = $(this).attr('id');
   userPlayedPattern.push(userChosenColor);
+
+  // Play animation and sound
   playAnimation(userChosenColor);
   playSound(userChosenColor);
 
+  // Check move
   checkAnswer(userPlayedPattern.length - 1);
 });
 
+// Handle starting game with key press
 $(document).keydown(function() {
   startGame();
 });
